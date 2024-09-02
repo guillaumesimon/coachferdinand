@@ -11,30 +11,51 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [motivationalText, setMotivationalText] = useState('');
   const [jsonStructure, setJsonStructure] = useState(null);
+  const [textPrompt, setTextPrompt] = useState('');
+  const [jsonPrompt, setJsonPrompt] = useState('');
+  const [textPromptCollapsed, setTextPromptCollapsed] = useState(true);
+  const [jsonPromptCollapsed, setJsonPromptCollapsed] = useState(true);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     const pace = `${minutes}:${seconds}`;
+    
+    // Calculate expected duration
+    const paceInSeconds = parseInt(minutes) * 60 + parseInt(seconds);
+    const distanceInKm = parseFloat(distance);
+    const durationInSeconds = paceInSeconds * distanceInKm;
+    const durationHours = Math.floor(durationInSeconds / 3600);
+    const durationMinutes = Math.floor((durationInSeconds % 3600) / 60);
+    const durationSeconds = durationInSeconds % 60;
+    const expectedDuration = `${durationHours.toString().padStart(2, '0')}:${durationMinutes.toString().padStart(2, '0')}:${durationSeconds.toString().padStart(2, '0')}`;
 
-    const response = await fetch('/api/motivation', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        distance,
-        pace,
-        comments,
-        coachingStyle,
-      }),
-    });
+    try {
+      const response = await fetch('/api/motivation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          distance,
+          pace,
+          comments,
+          coachingStyle,
+          expectedDuration,
+        }),
+      });
 
-    const data = await response.json();
-    setMotivationalText(data.motivationalText);
-    setJsonStructure(data.jsonStructure);
-    setLoading(false);
+      const data = await response.json();
+      setMotivationalText(data.motivationalText);
+      setJsonStructure(data.jsonStructure);
+      setTextPrompt(data.textPrompt);
+      setJsonPrompt(data.jsonPrompt);
+    } catch (error) {
+      console.error('Error generating motivational text:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -57,42 +78,46 @@ export default function Home() {
           <div className="rounded-md shadow-sm space-y-4">
             <div>
               <label htmlFor="distance" className="block text-sm font-medium text-gray-700">
-                Distance (kilometers)
+                Distance (km)
               </label>
               <input
                 id="distance"
                 name="distance"
-                type="number"
+                type="text"
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Distance in kilometers"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                placeholder="e.g., 5"
                 value={distance}
                 onChange={(e) => setDistance(e.target.value)}
               />
             </div>
-            <div>
-              <label htmlFor="pace" className="block text-sm font-medium text-gray-700">
-                Target Pace
-              </label>
-              <div className="flex items-center space-x-2">
+            <div className="flex space-x-4">
+              <div className="flex-1">
+                <label htmlFor="minutes" className="block text-sm font-medium text-gray-700">
+                  Minutes
+                </label>
                 <input
                   id="minutes"
                   name="minutes"
-                  type="number"
+                  type="text"
                   required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  placeholder="Minutes"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  placeholder="Min"
                   value={minutes}
                   onChange={(e) => setMinutes(e.target.value)}
                 />
-                <span>:</span>
+              </div>
+              <div className="flex-1">
+                <label htmlFor="seconds" className="block text-sm font-medium text-gray-700">
+                  Seconds
+                </label>
                 <input
                   id="seconds"
                   name="seconds"
-                  type="number"
+                  type="text"
                   required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  placeholder="Seconds"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  placeholder="Sec"
                   value={seconds}
                   onChange={(e) => setSeconds(e.target.value)}
                 />
@@ -100,13 +125,14 @@ export default function Home() {
             </div>
             <div>
               <label htmlFor="comments" className="block text-sm font-medium text-gray-700">
-                Additional Comments
+                Comments
               </label>
               <textarea
                 id="comments"
                 name="comments"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Additional Comments"
+                rows={3}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                placeholder="Any additional information about your run"
                 value={comments}
                 onChange={(e) => setComments(e.target.value)}
               />
@@ -118,7 +144,7 @@ export default function Home() {
               <select
                 id="coachingStyle"
                 name="coachingStyle"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 value={coachingStyle}
                 onChange={(e) => setCoachingStyle(e.target.value)}
               >
@@ -134,14 +160,51 @@ export default function Home() {
             <button
               type="submit"
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              disabled={loading}
             >
-              Get Motivated
+              {loading ? 'Loading...' : 'Get Motivated'}
             </button>
           </div>
         </form>
-        {loading && <p className="text-center text-gray-500">Loading...</p>}
+        {textPrompt && (
+          <div className="mt-6 p-4 bg-white rounded-md shadow-md">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-medium text-gray-900">Text Prompt</h3>
+              <button
+                onClick={() => setTextPromptCollapsed(!textPromptCollapsed)}
+                className="text-sm text-blue-500 hover:text-blue-700"
+              >
+                {textPromptCollapsed ? 'Expand' : 'Collapse'}
+              </button>
+            </div>
+            {!textPromptCollapsed && (
+              <pre className="mt-2 p-2 bg-gray-100 rounded-md overflow-x-auto text-sm">
+                {textPrompt}
+              </pre>
+            )}
+          </div>
+        )}
+        {jsonPrompt && (
+          <div className="mt-6 p-4 bg-white rounded-md shadow-md">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-medium text-gray-900">JSON Prompt</h3>
+              <button
+                onClick={() => setJsonPromptCollapsed(!jsonPromptCollapsed)}
+                className="text-sm text-blue-500 hover:text-blue-700"
+              >
+                {jsonPromptCollapsed ? 'Expand' : 'Collapse'}
+              </button>
+            </div>
+            {!jsonPromptCollapsed && (
+              <pre className="mt-2 p-2 bg-gray-100 rounded-md overflow-x-auto text-sm">
+                {jsonPrompt}
+              </pre>
+            )}
+          </div>
+        )}
         {motivationalText && (
           <div className="mt-6 p-4 bg-white rounded-md shadow-md">
+            <h3 className="text-lg font-medium text-gray-900">Motivational Text</h3>
             <p className="text-gray-900 whitespace-pre-line">{motivationalText}</p>
           </div>
         )}
