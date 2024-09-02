@@ -1,6 +1,16 @@
 import axios from 'axios';
 
-async function makeClaudeRequest(prompt) {
+export const config = {
+  api: {
+    bodyParser: true,
+    responseLimit: false,
+  },
+};
+
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1000; // 1 second
+
+async function makeClaudeRequest(prompt, retries = 0) {
   try {
     const response = await axios.post(
       'https://api.anthropic.com/v1/messages',
@@ -15,11 +25,16 @@ async function makeClaudeRequest(prompt) {
           'x-api-key': process.env.ANTHROPIC_API_KEY,
           'anthropic-version': '2023-06-01',
         },
+        timeout: 60000, // 60 seconds timeout
       }
     );
     return response.data.content[0].text;
   } catch (error) {
-    console.error('Error making Claude request:', error);
+    if (retries < MAX_RETRIES) {
+      console.log(`Retrying request (${retries + 1}/${MAX_RETRIES})...`);
+      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+      return makeClaudeRequest(prompt, retries + 1);
+    }
     throw error;
   }
 }
@@ -27,9 +42,9 @@ async function makeClaudeRequest(prompt) {
 export async function POST(req) {
   const { distance, pace, comments, coachingStyle, expectedDuration } = await req.json();
 
-  const textPrompt = `You are Ferdinand, a running coach. Generate a motivational text for a runner who is about to run ${distance} km at a pace of ${pace} min/km. Their expected run duration is ${expectedDuration}. Additional comments: ${comments}. Use a ${coachingStyle} coaching style. 
+  const textPrompt = `You are Ferdinand, a running coach. Generate a motivational message for a runner who is about to run ${distance} km at a pace of ${pace} min/km. Their expected run duration is ${expectedDuration}. Additional comments: ${comments}. Use a ${coachingStyle} coaching style. 
 
-Create a series of motivational messages that span the entire duration of the run. Ensure the maximum time between coach interventions is 2 minutes. Format each intervention as "[MM:SS] Motivational message". 
+Create a series of motivational messages that span the entire duration of the run. Include 4-6 timestamps during the run, ensuring the maximum time between coach interventions is 5 minutes. Format each intervention as "[MM:SS] Motivational message". 
 
 Your first message should be encouraging and set the tone for the run. Subsequent messages should provide motivation, technique reminders, and encouragement based on the expected progress of the run. Your final message should be celebratory as the runner finishes their run.`;
 

@@ -6,7 +6,8 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Ferdinand - Your Running Coach',
-  description: 'Get personalized motivational texts for your running sessions with Ferdinand, your running coach.',
+  description: 'Meet Ferdinand, your personal running coach! Get personalized motivational texts to keep you going strong during your runs.',
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
   openGraph: {
     title: 'Ferdinand - Your Running Coach',
     description: 'Get personalized motivational texts for your running sessions with Ferdinand, your running coach.',
