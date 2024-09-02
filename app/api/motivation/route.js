@@ -15,12 +15,18 @@ const axiosInstance = axios.create({
   },
 });
 
-async function makeClaudeRequest(prompt, retries = 0) {
+async function makeClaudeRequest(prompt, prefillResponse = null, retries = 0) {
   try {
+    const messages = [{ role: 'user', content: prompt }];
+    if (prefillResponse) {
+      messages.push({ role: 'assistant', content: prefillResponse });
+      messages.push({ role: 'user', content: 'Please complete the response above.' });
+    }
+
     const response = await axiosInstance.post('/messages', {
       model: 'claude-3-5-sonnet-20240620',
       max_tokens: 1500,
-      messages: [{ role: 'user', content: prompt }],
+      messages: messages,
     }, {
       timeout: 60000, // 60 seconds timeout
     });
@@ -29,7 +35,7 @@ async function makeClaudeRequest(prompt, retries = 0) {
     if (retries < MAX_RETRIES) {
       console.log(`Retrying request (${retries + 1}/${MAX_RETRIES})...`);
       await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
-      return makeClaudeRequest(prompt, retries + 1);
+      return makeClaudeRequest(prompt, prefillResponse, retries + 1);
     }
     throw error;
   }
@@ -64,11 +70,24 @@ Ensure that the JSON structure accurately reflects the content of the motivation
 
   try {
     const motivationalText = await makeClaudeRequest(textPrompt);
-    const jsonStructure = await makeClaudeRequest(jsonPrompt);
+    
+    const jsonPrefill = `{
+  "motivationalText": "${motivationalText.replace(/"/g, '\\"')}",
+  "interventions": [
+    {
+      "timestamp": "`;
+
+    const jsonResponse = await makeClaudeRequest(jsonPrompt, jsonPrefill);
 
     let parsedJsonStructure;
     try {
-      parsedJsonStructure = JSON.parse(jsonStructure);
+      // Extract the JSON part from the response
+      const jsonMatch = jsonResponse.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        parsedJsonStructure = JSON.parse(jsonMatch[0]);
+      } else {
+        throw new Error('No valid JSON found in the response');
+      }
     } catch (error) {
       console.error('Error parsing JSON:', error);
       parsedJsonStructure = null;
@@ -79,6 +98,7 @@ Ensure that the JSON structure accurately reflects the content of the motivation
       jsonPrompt,
       motivationalText,
       jsonStructure: parsedJsonStructure,
+      rawJsonResponse: jsonResponse, // Include this for debugging
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
