@@ -15,7 +15,7 @@ export async function POST(req) {
                     Pace: ${pace} per km
                     Comments: ${comments}
                     Coaching Style: ${coachingStyle}
-                    Please generate a motivational text for this run.`,
+                    Please generate a motivational text for this run. Include timestamps for each paragraph indicating when it should be read during the run. Format the timestamps as [MM:SS].`,
         },
       ],
     }, {
@@ -27,7 +27,13 @@ export async function POST(req) {
     });
 
     const motivationalText = response.data.content[0].text;
-    return new Response(JSON.stringify({ motivationalText }), { status: 200 });
+    const paragraphs = motivationalText.split('\n').filter(paragraph => paragraph.trim() !== '');
+    const jsonStructure = paragraphs.map((paragraph, index) => ({
+      timestamp: `[${String(Math.floor(index / 60)).padStart(2, '0')}:${String(index % 60).padStart(2, '0')}]`,
+      text: paragraph
+    }));
+
+    return new Response(JSON.stringify({ motivationalText, jsonStructure }), { status: 200 });
   } catch (error) {
     console.error('Error generating motivational text:', error);
     return new Response(JSON.stringify({ error: 'Failed to generate motivational text' }), { status: 500 });

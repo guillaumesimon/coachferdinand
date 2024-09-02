@@ -10,6 +10,7 @@ export default function Home() {
   const [coachingStyle, setCoachingStyle] = useState('Encouraging');
   const [loading, setLoading] = useState(false);
   const [motivationalText, setMotivationalText] = useState('');
+  const [jsonStructure, setJsonStructure] = useState(null);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -32,6 +33,7 @@ export default function Home() {
 
     const data = await response.json();
     setMotivationalText(data.motivationalText);
+    setJsonStructure(data.jsonStructure);
     setLoading(false);
   };
 
@@ -41,7 +43,7 @@ export default function Home() {
         <div>
           <img
             className="mx-auto h-48 w-auto"
-            src="/run-header.png"
+            src="/header.png"
             alt="Header Image"
           />
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
@@ -137,7 +139,15 @@ export default function Home() {
         {loading && <p className="text-center text-gray-500">Loading...</p>}
         {motivationalText && (
           <div className="mt-6 p-4 bg-white rounded-md shadow-md">
-            <p className="text-gray-900">{motivationalText}</p>
+            <p className="text-gray-900 whitespace-pre-line">{motivationalText}</p>
+          </div>
+        )}
+        {jsonStructure && (
+          <div className="mt-6 p-4 bg-white rounded-md shadow-md">
+            <h3 className="text-lg font-medium text-gray-900">JSON Structure</h3>
+            <pre className="mt-2 p-2 bg-gray-100 rounded-md overflow-x-auto">
+              {JSON.stringify(jsonStructure, null, 2)}
+            </pre>
           </div>
         )}
       </div>
