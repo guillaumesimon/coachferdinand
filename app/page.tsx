@@ -91,7 +91,7 @@ export default function Home() {
               name="distance"
               type="number"
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
               placeholder="e.g., 5"
               value={distance}
               onChange={(e) => setDistance(e.target.value)}
@@ -146,7 +146,7 @@ export default function Home() {
               id="comments"
               name="comments"
               rows={3}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
               placeholder="Any additional information about your run"
               value={comments}
               onChange={(e) => setComments(e.target.value)}
@@ -159,7 +159,7 @@ export default function Home() {
             <select
               id="coachingStyle"
               name="coachingStyle"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900"
               value={coachingStyle}
               onChange={(e) => setCoachingStyle(e.target.value)}
             >
