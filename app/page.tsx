@@ -46,9 +46,12 @@ export default function Home() {
             src="/header.png"
             alt="Header Image"
           />
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Ferdinand - Your Running Coach
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 leading-tight">
+            Ferdinand - <br /> Your Running Coach
           </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            Meet Ferdinand, your personal running coach! Get personalized motivational texts to keep you going strong during your runs.
+          </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm space-y-4">
