@@ -1,11 +1,7 @@
 import axios from 'axios';
+import { NextResponse } from 'next/server';
 
-export const config = {
-  api: {
-    bodyParser: true,
-    responseLimit: false,
-  },
-};
+export const runtime = 'edge'; // This replaces `export const config = { runtime: 'edge' };`
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000; // 1 second
