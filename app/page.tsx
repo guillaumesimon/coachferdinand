@@ -41,7 +41,7 @@ export default function Home() {
         <div>
           <img
             className="mx-auto h-48 w-auto"
-            src="/header.jpg"
+            src="/run-header.png"
             alt="Header Image"
           />
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
@@ -66,34 +66,32 @@ export default function Home() {
               />
             </div>
             <div>
-              <label htmlFor="minutes" className="block text-sm font-medium text-gray-700">
-                Target Pace (Minutes)
+              <label htmlFor="pace" className="block text-sm font-medium text-gray-700">
+                Target Pace
               </label>
-              <input
-                id="minutes"
-                name="minutes"
-                type="number"
-                required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Minutes"
-                value={minutes}
-                onChange={(e) => setMinutes(e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor="seconds" className="block text-sm font-medium text-gray-700">
-                Target Pace (Seconds)
-              </label>
-              <input
-                id="seconds"
-                name="seconds"
-                type="number"
-                required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Seconds"
-                value={seconds}
-                onChange={(e) => setSeconds(e.target.value)}
-              />
+              <div className="flex items-center space-x-2">
+                <input
+                  id="minutes"
+                  name="minutes"
+                  type="number"
+                  required
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  placeholder="Minutes"
+                  value={minutes}
+                  onChange={(e) => setMinutes(e.target.value)}
+                />
+                <span>:</span>
+                <input
+                  id="seconds"
+                  name="seconds"
+                  type="number"
+                  required
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  placeholder="Seconds"
+                  value={seconds}
+                  onChange={(e) => setSeconds(e.target.value)}
+                />
+              </div>
             </div>
             <div>
               <label htmlFor="comments" className="block text-sm font-medium text-gray-700">
