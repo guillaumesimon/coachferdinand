@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 
 export default function Home() {
   const [distance, setDistance] = useState('');
@@ -11,7 +11,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [motivationalText, setMotivationalText] = useState('');
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -39,11 +39,6 @@ export default function Home() {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <img
-            className="mx-auto h-48 w-auto"
-            src="/run-header.png"
-            alt="Header Image"
-          />
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Ferdinand - Your Running Coach
           </h2>
