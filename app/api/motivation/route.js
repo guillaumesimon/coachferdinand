@@ -38,9 +38,9 @@ async function makeClaudeRequest(prompt, retries = 0) {
 export async function POST(req) {
   const { distance, pace, comments, coachingStyle, expectedDuration } = await req.json();
 
-  const textPrompt = `You are Ferdinand, a running coach. Generate a motivational message for a runner who is about to run ${distance} km at a pace of ${pace} min/km. Their expected run duration is ${expectedDuration}. Additional comments: ${comments}. Use a ${coachingStyle} coaching style. 
+  const textPrompt = `You are Ferdinand, a running coach. Generate a motivational text for a runner who is about to run ${distance} km at a pace of ${pace} min/km. Their expected run duration is ${expectedDuration}. Additional comments: ${comments}. Use a ${coachingStyle} coaching style. 
 
-Create a series of motivational messages that span the entire duration of the run. Include 4-6 timestamps during the run, ensuring the maximum time between coach interventions is 5 minutes. Format each intervention as "[MM:SS] Motivational message". 
+Create a series of motivational messages that span the entire duration of the run. Ensuring the maximum time between coach interventions is 3 minutes. Each intervention should last a minimum of 30s. Format each intervention as "[MM:SS] Motivational message". 
 
 Your first message should be encouraging and set the tone for the run. Subsequent messages should provide motivation, technique reminders, and encouragement based on the expected progress of the run. Your final message should be celebratory as the runner finishes their run.`;
 
