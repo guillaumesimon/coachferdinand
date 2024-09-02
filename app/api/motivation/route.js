@@ -6,24 +6,24 @@ export const runtime = 'edge'; // This replaces `export const config = { runtime
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1000; // 1 second
 
+const axiosInstance = axios.create({
+  baseURL: 'https://api.anthropic.com/v1',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': process.env.ANTHROPIC_API_KEY,
+    'anthropic-version': '2023-06-01',
+  },
+});
+
 async function makeClaudeRequest(prompt, retries = 0) {
   try {
-    const response = await axios.post(
-      'https://api.anthropic.com/v1/messages',
-      {
-        model: 'claude-3-5-sonnet-20240620',
-        max_tokens: 1500,
-        messages: [{ role: 'user', content: prompt }],
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': process.env.ANTHROPIC_API_KEY,
-          'anthropic-version': '2023-06-01',
-        },
-        timeout: 60000, // 60 seconds timeout
-      }
-    );
+    const response = await axiosInstance.post('/messages', {
+      model: 'claude-3-5-sonnet-20240620',
+      max_tokens: 1500,
+      messages: [{ role: 'user', content: prompt }],
+    }, {
+      timeout: 60000, // 60 seconds timeout
+    });
     return response.data.content[0].text;
   } catch (error) {
     if (retries < MAX_RETRIES) {
