@@ -15,7 +15,7 @@ export async function POST(req) {
                     Pace: ${pace} per km
                     Comments: ${comments}
                     Coaching Style: ${coachingStyle}
-                    Please generate a motivational text for this run. Include timestamps for each paragraph indicating when it should be read during the run. Format the timestamps as [MM:SS].`,
+                    Please generate a motivational text for this run. Include timestamps for each paragraph indicating when it should be read during the run. Ensure that the maximum time without the coach speaking is 3 minutes. Format the timestamps as [MM:SS].`,
         },
       ],
     }, {
@@ -29,7 +29,7 @@ export async function POST(req) {
     const motivationalText = response.data.content[0].text;
     const paragraphs = motivationalText.split('\n').filter(paragraph => paragraph.trim() !== '');
     const jsonStructure = paragraphs.map((paragraph, index) => ({
-      timestamp: `[${String(Math.floor(index / 60)).padStart(2, '0')}:${String(index % 60).padStart(2, '0')}]`,
+      timestamp: `[${String(Math.floor(index * 3)).padStart(2, '0')}:00]`,
       text: paragraph
     }));
 
