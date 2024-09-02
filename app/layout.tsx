@@ -1,33 +1,43 @@
-import './globals.css';
-import { ReactNode } from 'react';
-import Head from 'next/head';
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
 
-export const metadata = {
+const inter = Inter({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
   title: 'Ferdinand - Your Running Coach',
-  description: 'Get personalized motivational text for your running sessions.',
-};
-
-interface RootLayoutProps {
-  children: ReactNode;
+  description: 'Get personalized motivational texts for your running sessions with Ferdinand, your running coach.',
+  openGraph: {
+    title: 'Ferdinand - Your Running Coach',
+    description: 'Get personalized motivational texts for your running sessions with Ferdinand, your running coach.',
+    url: 'https://coachferdinand.vercel.app/',
+    siteName: 'Ferdinand',
+    images: [
+      {
+        url: 'https://coachferdinand.vercel.app/header.png',
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Ferdinand - Your Running Coach',
+    description: 'Get personalized motivational texts for your running sessions with Ferdinand, your running coach.',
+    images: ['https://coachferdinand.vercel.app/header.png'],
+  },
 }
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="en">
-      <Head>
-        <meta property="og:title" content="Ferdinand - Your Running Coach" />
-        <meta property="og:description" content="Get personalized motivational texts for your running sessions with Ferdinand, your running coach." />
-        <meta property="og:image" content="https://coachferdinand.vercel.app/header.png" />
-        <meta property="og:url" content="https://coachferdinand.vercel.app/" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Ferdinand - Your Running Coach" />
-        <meta name="twitter:description" content="Get personalized motivational texts for your running sessions with Ferdinand, your running coach." />
-        <meta name="twitter:image" content="https://coachferdinand.vercel.app/header.png" />
-        <meta name="twitter:url" content="https://coachferdinand.vercel.app/" />
-      </Head>
-      <body>
-        {children}
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
-  );
+  )
 }
