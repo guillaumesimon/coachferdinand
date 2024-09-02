@@ -17,12 +17,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <Head>
         <meta property="og:title" content="Ferdinand - Your Running Coach" />
         <meta property="og:description" content="Get personalized motivational texts for your running sessions with Ferdinand, your running coach." />
-        <meta property="og:image" content="/Flux Schnell API.webp" />
+        <meta property="og:image" content="/header.png" />
         <meta property="og:url" content="https://coachferdinand.vercel.app/" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Ferdinand - Your Running Coach" />
         <meta name="twitter:description" content="Get personalized motivational texts for your running sessions with Ferdinand, your running coach." />
-        <meta name="twitter:image" content="/Flux Schnell API.webp" />
+        <meta name="twitter:image" content="/header.png" />
         <meta name="twitter:url" content="https://coachferdinand.vercel.app/" />
       </Head>
       <body>
